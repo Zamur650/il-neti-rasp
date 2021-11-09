@@ -2,6 +2,20 @@ const { Telegraf, Markup } = require('telegraf')
 const axios = require('axios')
 const config = require('../config.json')
 
+global.classBackKeyboard = Markup.inlineKeyboard([
+	{
+		text: 'Назад ⬅️',
+		callback_data: 'classSchedule'
+	}
+])
+
+global.teacherBackKeyboard = Markup.inlineKeyboard([
+	{
+		text: 'Назад ⬅️',
+		callback_data: 'teacherSchedule'
+	}
+])
+
 // Функция для обновления данных
 async function updateData() {
 	var response = (
@@ -67,7 +81,7 @@ async function updateData() {
 			})
 
 			return ctx
-				.editMessageText(text, global.classesKeyboard)
+				.editMessageText(text, global.classBackKeyboard)
 				.then(() => next()).catch(() => {return})
 		})`)
 	})
@@ -111,7 +125,7 @@ async function updateData() {
 			})
 
 			return ctx
-				.editMessageText(text, global.teachersKeyboard)
+				.editMessageText(text, global.teacherBackKeyboard)
 				.then(() => next()).catch(() => {return})
 		})`)
 	})
@@ -139,9 +153,20 @@ const bot = new Telegraf(config.token)
 
 bot.start((ctx) =>
 	ctx.reply(
-		'/class - узнать расписание класса\n/teacher - узнать расписание учителя'
+		'/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте'
 	)
 )
+
+bot.command('about', async (ctx) => {
+	if (!NIKA) return
+
+	ctx.reply(
+		`Дата обновления информации:\n${NIKA.EXPORT_DATE} ${NIKA.EXPORT_TIME}`,
+		Markup.inlineKeyboard([
+			Markup.button.url('Ссылка на расписание', 'https://lyceum.nstu.ru/rasp/')
+		])
+	)
+})
 
 bot.command('class', async (ctx) => {
 	ctx.reply('Выберете ваш класс:', global.classesKeyboard)
@@ -149,6 +174,22 @@ bot.command('class', async (ctx) => {
 
 bot.command('teacher', async (ctx) => {
 	ctx.reply('Выберете учителя:', global.teachersKeyboard)
+})
+
+bot.action('classSchedule', async (ctx) => {
+	return ctx
+		.editMessageText('Выберете ваш класс:', global.classesKeyboard)
+		.catch(() => {
+			return
+		})
+})
+
+bot.action('teacherSchedule', async (ctx) => {
+	return ctx
+		.editMessageText('Выберете учителя:', global.teachersKeyboard)
+		.catch(() => {
+			return
+		})
 })
 
 bot.launch()
