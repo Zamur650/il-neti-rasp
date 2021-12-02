@@ -1,6 +1,12 @@
 const { Telegraf, Markup } = require('telegraf')
 const axios = require('axios')
-const config = require('../config.json')
+const dotenv = require('dotenv')
+
+;(async () => {
+	if (process.env.NODE_ENV != 'production') {
+		await dotenv.config()
+	}
+})()
 
 global.classBackKeyboard = Markup.inlineKeyboard([
 	{
@@ -149,7 +155,7 @@ updateData()
 setInterval(updateData, 1800000)
 
 // Инициализируем бота
-const bot = new Telegraf(config.token)
+const bot = new Telegraf(process.env.TOKEN)
 
 bot.start((ctx) =>
 	ctx.reply(
