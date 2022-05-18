@@ -155,7 +155,7 @@ updateData()
 setInterval(updateData, 1800000)
 
 // Инициализируем бота
-const bot = new Telegraf(process.env.TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 bot.start((ctx) =>
 	ctx.reply(
