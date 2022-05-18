@@ -26,19 +26,19 @@ global.teacherBackKeyboard = Markup.inlineKeyboard([
 async function updateData() {
 	var response = (
 		await axios.get(
-			'http://www.whateverorigin.org/get?url=https://lyceum.nstu.ru/rasp/schedule.html'
+			'https://lyceum.nstu.ru/rasp/schedule.html'
 		)
-	).data.contents
+	).data
 
 	eval(
 		(
 			await axios.get(
-				`http://www.whateverorigin.org/get?url=https://lyceum.nstu.ru/rasp/${response.substring(
-					451,
-					479
+				`https://lyceum.nstu.ru/rasp/${response.substring(
+					450,
+					478
 				)}`
 			)
-		).data.contents
+		).data
 	)
 
 	globalThis.NIKA = NIKA
