@@ -26,19 +26,19 @@ global.teacherBackKeyboard = Markup.inlineKeyboard([
 async function updateData() {
 	var response = (
 		await axios.get(
-			'http://www.whateverorigin.org/get?url=https://lyceum.nstu.ru/rasp/schedule.html'
+			'https://lyceum.nstu.ru/rasp/schedule.html'
 		)
-	).data.contents
+	).data
 
 	eval(
 		(
 			await axios.get(
-				`http://www.whateverorigin.org/get?url=https://lyceum.nstu.ru/rasp/${response.substring(
-					451,
-					479
+				`https://lyceum.nstu.ru/rasp/${response.substring(
+					450,
+					478
 				)}`
 			)
-		).data.contents
+		).data
 	)
 
 	globalThis.NIKA = NIKA
@@ -54,42 +54,6 @@ async function updateData() {
 		listClassesObject.push(
 			Markup.button.callback(className, `class ${classID}`)
 		)
-
-		eval(`bot.action(\`class \${classID}\`, (ctx, next) => {
-			var classID = '${classID}'
-
-			var NIKA = globalThis.NIKA
-
-			if (!NIKA) return
-
-			var text = \`Расписание для \${NIKA.CLASSES[classID]}:\\n\`
-			var day = 0
-			var classID
-
-			// Обрабатываем и высылаем данные
-			Object.entries(
-				NIKA.CLASS_SCHEDULE[Object.keys(NIKA.CLASS_SCHEDULE)[0]][classID]
-			).forEach(([lessonID, schedule]) => {
-				if (Number(lessonID[0]) != day) {
-					var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1]
-					text += \`-- \${dayName}\\n\`
-					day = Number(lessonID[0])
-				}
-
-				var room = NIKA.ROOMS[schedule.r[0]]
-				var subject = NIKA.SUBJECTS[schedule.s[0]]
-				var teacher = NIKA.TEACHERS[schedule.t[0]]
-
-				if (!subject)
-					return text += \`\${Number(lessonID.substr(1))} Нет уроков\\n\`
-
-				text += \`\${Number(lessonID.substr(1))} \${room} \${subject} - \${teacher}\\n\`
-			})
-
-			return ctx
-				.editMessageText(text, global.classBackKeyboard)
-				.then(() => next()).catch(() => {return})
-		})`)
 	})
 
 	Object.entries(NIKA.TEACHERS).forEach(([teacherID, teacherName]) => {
@@ -98,42 +62,6 @@ async function updateData() {
 		listTeachersObject.push(
 			Markup.button.callback(teacherName, `teacher ${teacherID}`)
 		)
-
-		eval(`bot.action(\`teacher \${teacherID}\`, (ctx, next) => {
-			var teacherID = '${teacherID}'
-
-			var NIKA = globalThis.NIKA
-
-			if (!NIKA) return
-
-			var text = \`Расписание для \${NIKA.TEACHERS[teacherID]}:\\n\`
-			var day = 0
-			var classID
-
-			// Обрабатываем и высылаем данные
-			Object.entries(
-				NIKA.TEACH_SCHEDULE[Object.keys(NIKA.TEACH_SCHEDULE)[0]][teacherID]
-			).forEach(([lessonID, schedule]) => {
-				if (Number(lessonID[0]) != day) {
-					var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1]
-					text += \`-- \${dayName}\\n\`
-					day = Number(lessonID[0])
-				}
-
-				var room = NIKA.ROOMS[schedule.r]
-				var subject = NIKA.SUBJECTS[schedule.s]
-				var className = NIKA.CLASSES[schedule.c]
-
-				if (!subject)
-					return text += \`\${Number(lessonID.substr(1))} Нет уроков\\n\`
-
-				return text += \`\${Number(lessonID.substr(1))} \${room} \${subject} \${className}\\n\`
-			})
-
-			return ctx
-				.editMessageText(text, global.teacherBackKeyboard)
-				.then(() => next()).catch(() => {return})
-		})`)
 	})
 
 	while (listClassesObject.length) {
@@ -155,7 +83,7 @@ updateData()
 setInterval(updateData, 1800000)
 
 // Инициализируем бота
-const bot = new Telegraf(process.env.TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 bot.start((ctx) =>
 	ctx.reply(
@@ -196,6 +124,78 @@ bot.action('teacherSchedule', async (ctx) => {
 		.catch(() => {
 			return
 		})
+})
+
+bot.action(/class (.*)/, (ctx, next) => {
+	var classID = ctx.match[1]
+
+	var NIKA = globalThis.NIKA
+
+	if (!NIKA) return
+
+	var text = `Расписание для ${NIKA.CLASSES[classID]}:\n`
+	var day = 0
+	var classID
+
+	// Обрабатываем и высылаем данные
+	Object.entries(
+		NIKA.CLASS_SCHEDULE[Object.keys(NIKA.CLASS_SCHEDULE)[0]][classID]
+	).forEach(([lessonID, schedule]) => {
+		if (Number(lessonID[0]) != day) {
+			var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1]
+			text += `-- \${dayName}\n`
+			day = Number(lessonID[0])
+		}
+
+		var room = NIKA.ROOMS[schedule.r[0]]
+		var subject = NIKA.SUBJECTS[schedule.s[0]]
+		var teacher = NIKA.TEACHERS[schedule.t[0]]
+
+		if (!subject)
+			return text += `${Number(lessonID.substr(1))} Нет уроков\n`
+
+		text += `${Number(lessonID.substr(1))} ${room} ${subject} - ${teacher}\n`
+	})
+
+	return ctx
+		.editMessageText(text, global.classBackKeyboard)
+		.then(() => next()).catch(() => {return})
+})
+
+bot.action(/teacher (.*)/, (ctx, next) => {
+	var teacherID = ctx.match[1]
+
+	var NIKA = globalThis.NIKA
+
+	if (!NIKA) return
+
+	var text = `Расписание для ${NIKA.TEACHERS[teacherID]}:\n`
+	var day = 0
+	var classID
+
+	// Обрабатываем и высылаем данные
+	Object.entries(
+		NIKA.TEACH_SCHEDULE[Object.keys(NIKA.TEACH_SCHEDULE)[0]][teacherID]
+	).forEach(([lessonID, schedule]) => {
+		if (Number(lessonID[0]) != day) {
+			var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1]
+			text += `-- ${dayName}\n`
+			day = Number(lessonID[0])
+		}
+
+		var room = NIKA.ROOMS[schedule.r]
+		var subject = NIKA.SUBJECTS[schedule.s]
+		var className = NIKA.CLASSES[schedule.c]
+
+		if (!subject)
+			return text += `${Number(lessonID.substr(1))} Нет уроков\n`
+
+		return text += `${Number(lessonID.substr(1))} ${room} ${subject} ${className}\n`
+	})
+
+	return ctx
+		.editMessageText(text, global.teacherBackKeyboard)
+		.then(() => next()).catch(() => {return})
 })
 
 bot.launch()
