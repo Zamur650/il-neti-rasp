@@ -143,7 +143,7 @@ bot.action(/class (.*)/, (ctx, next) => {
 	).forEach(([lessonID, schedule]) => {
 		if (Number(lessonID[0]) != day) {
 			var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1]
-			text += `-- \${dayName}\n`
+			text += `-- ${dayName}\n`
 			day = Number(lessonID[0])
 		}
 
