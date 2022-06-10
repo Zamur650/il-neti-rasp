@@ -1,26 +1,7 @@
 const { Telegraf, Markup } = require('telegraf')
 const axios = require('axios')
-const dotenv = require('dotenv')
-
-;(async () => {
-	if (process.env.NODE_ENV != 'production') {
-		await dotenv.config()
-	}
-})()
-
-global.classBackKeyboard = Markup.inlineKeyboard([
-	{
-		text: 'Назад ⬅️',
-		callback_data: 'classSchedule'
-	}
-])
-
-global.teacherBackKeyboard = Markup.inlineKeyboard([
-	{
-		text: 'Назад ⬅️',
-		callback_data: 'teacherSchedule'
-	}
-])
+const config = require('./env')
+const { classBackKeyboard, teacherBackKeyboard } = require('./keyboards')
 
 // Функция для обновления данных
 async function updateData() {
@@ -83,7 +64,7 @@ updateData()
 setInterval(updateData, 1800000)
 
 // Инициализируем бота
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Telegraf(config.BOT_TOKEN)
 
 bot.start((ctx) =>
 	ctx.reply(
@@ -158,7 +139,7 @@ bot.action(/class (.*)/, (ctx, next) => {
 	})
 
 	return ctx
-		.editMessageText(text, global.classBackKeyboard)
+		.editMessageText(text, classBackKeyboard)
 		.then(() => next()).catch(() => {return})
 })
 
@@ -194,7 +175,7 @@ bot.action(/teacher (.*)/, (ctx, next) => {
 	})
 
 	return ctx
-		.editMessageText(text, global.teacherBackKeyboard)
+		.editMessageText(text, teacherBackKeyboard)
 		.then(() => next()).catch(() => {return})
 })
 
