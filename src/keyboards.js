@@ -1,11 +1,13 @@
-export const classBackKeyboard = Markup.inlineKeyboard([
+const { Markup } = require("telegraf");
+
+module.exports.classBackKeyboard = Markup.inlineKeyboard([
 	{
 		text: "Назад ⬅️",
 		callback_data: "classSchedule"
 	}
 ]);
 
-export const teacherBackKeyboard = Markup.inlineKeyboard([
+module.exports.teacherBackKeyboard = Markup.inlineKeyboard([
 	{
 		text: "Назад ⬅️",
 		callback_data: "teacherSchedule"

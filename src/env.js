@@ -6,4 +6,4 @@ const dotenv = require("dotenv");
 	}
 })();
 
-export default process.env;
+module.exports = process.env;
