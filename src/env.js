@@ -1,9 +1,9 @@
-const dotenv = require('dotenv')
+const dotenv = require("dotenv");
 
-;(async () => {
-	if (process.env.NODE_ENV != 'production') {
-		await dotenv.config()
+(async () => {
+	if (process.env.NODE_ENV != "production") {
+		await dotenv.config();
 	}
-})()
+})();
 
-export default process.env
+export default process.env;

@@ -1,13 +1,13 @@
 export const classBackKeyboard = Markup.inlineKeyboard([
 	{
-		text: 'Назад ⬅️',
-		callback_data: 'classSchedule'
+		text: "Назад ⬅️",
+		callback_data: "classSchedule"
 	}
-])
+]);
 
 export const teacherBackKeyboard = Markup.inlineKeyboard([
 	{
-		text: 'Назад ⬅️',
-		callback_data: 'teacherSchedule'
+		text: "Назад ⬅️",
+		callback_data: "teacherSchedule"
 	}
-])
+]);
