@@ -1,7 +1,7 @@
 {
 	"name": "lyceum-nstu-schedule-bot",
 	"version": "1.0.0",
-	"description": "Телеграм бот для вывода расписания",
+	"description": "Телеграм бот для просмотра расписания ИЛ НГТУ",
 	"main": "src/index.js",
 	"scripts": {
 		"start": "node .",
