@@ -78,16 +78,16 @@ bot.command("about", async (ctx) => {
 });
 
 bot.command("class", async (ctx) => {
-	ctx.reply("Выберете ваш класс:", global.classesKeyboard);
+	ctx.reply("Выберите ваш класс:", global.classesKeyboard);
 });
 
 bot.command("teacher", async (ctx) => {
-	ctx.reply("Выберете учителя:", global.teachersKeyboard);
+	ctx.reply("Выберите учителя:", global.teachersKeyboard);
 });
 
 bot.action("classSchedule", async (ctx) => {
 	return ctx
-		.editMessageText("Выберете ваш класс:", global.classesKeyboard)
+		.editMessageText("Выберите ваш класс:", global.classesKeyboard)
 		.catch(() => {
 			return;
 		});
@@ -95,7 +95,7 @@ bot.action("classSchedule", async (ctx) => {
 
 bot.action("teacherSchedule", async (ctx) => {
 	return ctx
-		.editMessageText("Выберете учителя:", global.teachersKeyboard)
+		.editMessageText("Выберите учителя:", global.teachersKeyboard)
 		.catch(() => {
 			return;
 		});
@@ -110,7 +110,6 @@ bot.action(/class (.*)/, (ctx, next) => {
 
 	var text = `Расписание для ${NIKA.CLASSES[classID]}:\n`;
 	var day = 0;
-	var classID;
 
 	// Обрабатываем и высылаем данные
 	Object.entries(
@@ -148,7 +147,6 @@ bot.action(/teacher (.*)/, (ctx, next) => {
 
 	var text = `Расписание для ${NIKA.TEACHERS[teacherID]}:\n`;
 	var day = 0;
-	var classID;
 
 	// Обрабатываем и высылаем данные
 	Object.entries(
