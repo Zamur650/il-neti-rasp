@@ -13,20 +13,20 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/lyceum-nstu/il-neti-rasp.git"
+		"url": "git+https://github.com/leshapomogi/il-neti-rasp.git"
 	},
-	"author": "Alexiy Rybin <alexiy.rybin@gmail.com>",
+	"author": "Aleksei Rybin <0xalekseirybin@gmail.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/lyceum-nstu/il-neti-rasp/issues"
+		"url": "https://github.com/leshapomogi/il-neti-rasp/issues"
 	},
 	"dependencies": {
 		"axios": "0.27.2",
-		"dotenv": "16.0.1",
-		"telegraf": "4.8.2"
+		"dotenv": "16.4.5",
+		"telegraf": "4.16.3"
 	},
 	"devDependencies": {
-		"prettier": "2.6.2"
+		"prettier": "3.2.5"
 	},
-	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+	"packageManager": "pnpm@9.1.0+sha512.67f5879916a9293e5cf059c23853d571beaf4f753c707f40cb22bed5fb1578c6aad3b6c4107ccb3ba0b35be003eb621a16471ac836c87beb53f9d54bb4612724"
 }
