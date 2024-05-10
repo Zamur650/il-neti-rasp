@@ -1,17 +1,41 @@
 # Расписание ИЛ НГТУ
 
-## Commands
+## Команды
 
-class - узнать расписание класса
+- `/about` - узнать информацию о боте
+- `/class` - узнать расписание класса
+- `/teacher` - узнать расписание учителя
 
-teacher - узнать расписание учителя
+## Установка
 
-## Install
+1. Создайте бота у [@BotFather](https://t.me/BotFather)
 
-1. Install nodejs
+2. Установите [Node.js](https://nodejs.org/en/download)
 
-1. Install deps via `yarn`
+3. Установите [pnpm](https://pnpm.io/) через [Corepack](https://nodejs.org/api/corepack.html):
 
-1. Configure bot in .env file
+   ```sh
+   corepack enable
+   pnpm install
+   ```
 
-1. Run bot via `yarn start`
+4. Настройте свой [.env](.env.sample) (пример в [.env.sample](.env.sample)):
+
+   ```env
+   BOT_TOKEN="Токен бота, полученный у @BotFather"
+   ```
+
+
+5. Установите зависимости:
+
+   ```sh
+   pnpm install
+   ```
+
+6. Запустите бота:
+
+   ```sh
+   pnpm start
+   ```
+
+7. Теперь можете написать своему боту!
