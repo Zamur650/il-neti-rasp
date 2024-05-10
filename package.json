@@ -1,5 +1,5 @@
 {
-	"name": "il-neti-rasp",
+	"name": "lyceum-nstu-schedule-bot",
 	"version": "1.0.0",
 	"description": "Телеграм бот для вывода расписания",
 	"main": "src/index.js",
@@ -13,12 +13,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/leshapomogi/il-neti-rasp.git"
+		"url": "git+https://github.com/leshapomogi/lyceum-nstu-schedule-bot.git"
 	},
 	"author": "Aleksei Rybin <0xalekseirybin@gmail.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/leshapomogi/il-neti-rasp/issues"
+		"url": "https://github.com/leshapomogi/lyceum-nstu-schedule-bot/issues"
 	},
 	"dependencies": {
 		"axios": "0.27.2",
