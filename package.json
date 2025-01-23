@@ -1,11 +1,12 @@
 {
-	"name": "lyceum-nstu-schedule-bot",
-	"version": "1.0.0",
+	"name": "lyceumnstubot",
+	"version": "1.0.1",
 	"description": "Телеграм бот для просмотра расписания ИЛ НГТУ",
 	"main": "src/index.js",
 	"scripts": {
 		"start": "node .",
-		"prettier": "npx prettier --write ."
+		"format": "prettier . --check --ignore-path .gitignore",
+		"format:fix": "prettier . --write --ignore-path .gitignore"
 	},
 	"keywords": [
 		"bot",
@@ -27,6 +28,9 @@
 	},
 	"devDependencies": {
 		"prettier": "3.2.5"
+	},
+	"engines": {
+		"node": ">=18"
 	},
 	"packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
 }
