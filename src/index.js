@@ -40,7 +40,7 @@ async function updateData() {
 	});
 
 	while (listClassesObject.length) {
-		classesObject.push(listClassesObject.splice(0, 5));
+		classesObject.push(listClassesObject.splice(0, 4));
 	}
 
 	while (listTeachersObject.length) {
