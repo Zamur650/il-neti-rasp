@@ -13,12 +13,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/leshapomogi/lyceum-nstu-schedule-bot.git"
+		"url": "git+https://github.com/tapnisu/lyceumnstubot.git"
 	},
-	"author": "Aleksei Rybin <0xalekseirybin@gmail.com>",
+	"author": "Aleksei Rybin <aleksei@tapni.su>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/leshapomogi/lyceum-nstu-schedule-bot/issues"
+		"url": "https://github.com/tapnisu/lyceumnstubot/issues"
 	},
 	"dependencies": {
 		"axios": "0.28.0",
