@@ -31,7 +31,7 @@ async function updateData() {
 	Object.entries(NIKA.CLASSES).forEach(([classID, className]) => {
 		classID = ("000" + classID).substr(-3);
 
-		const match = className.match(gradeRegexp)
+		const match = className.match(gradeRegexp);
 		const grade = Number(match[1]);
 
 		classesObject[grade - 1].push(
