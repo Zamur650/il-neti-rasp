@@ -1,7 +1,7 @@
 {
 	"name": "lyceumnstubot",
 	"version": "1.0.1",
-	"description": "Телеграм бот для просмотра расписания ИЛ НГТУ",
+	"description": "Телеграм бот для просмотра расписания Инженерного Лицея НГТУ",
 	"main": "src/index.js",
 	"scripts": {
 		"start": "node .",
