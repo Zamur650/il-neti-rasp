@@ -3,6 +3,8 @@ const axios = require("axios");
 const config = require("./env");
 const { classBackKeyboard, teacherBackKeyboard } = require("./keyboards");
 
+const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/g;
+
 // Функция для обновления данных
 async function updateData() {
 	var response = (await axios.get("https://lyceum.nstu.ru/rasp/schedule.html"))
@@ -18,15 +20,19 @@ async function updateData() {
 
 	globalThis.NIKA = NIKA;
 
-	let listClassesObject = [];
-	let classesObject = [];
+	let classesObject = new Array(11);
 	let listTeachersObject = [];
 	let teachersObject = [];
+
+	classesObject.map(() => []);
 
 	Object.entries(NIKA.CLASSES).forEach(([classID, className]) => {
 		classID = ("000" + classID).substr(-3);
 
-		listClassesObject.push(
+		const match = gradeRegexp.exec(className);
+		const grade = Number(match[1]);
+
+		classesObject[grade - 1].push(
 			Markup.button.callback(className, `class ${classID}`)
 		);
 	});
@@ -38,10 +44,6 @@ async function updateData() {
 			Markup.button.callback(teacherName, `teacher ${teacherID}`)
 		);
 	});
-
-	while (listClassesObject.length) {
-		classesObject.push(listClassesObject.splice(0, 4));
-	}
 
 	while (listTeachersObject.length) {
 		teachersObject.push(listTeachersObject.splice(0, 3));
