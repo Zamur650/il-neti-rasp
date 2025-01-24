@@ -1,13 +1,13 @@
-const { Markup } = require("telegraf");
+import { inlineKeyboard } from "telegraf/markup";
 
-module.exports.classBackKeyboard = Markup.inlineKeyboard([
+export const classBackKeyboard = inlineKeyboard([
   {
     text: "Назад ⬅️",
     callback_data: "classSchedule",
   },
 ]);
 
-module.exports.teacherBackKeyboard = Markup.inlineKeyboard([
+export const teacherBackKeyboard = inlineKeyboard([
   {
     text: "Назад ⬅️",
     callback_data: "teacherSchedule",

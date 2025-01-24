@@ -1,22 +1,20 @@
-const { Telegraf, Markup } = require("telegraf");
-const axios = require("axios");
-const config = require("./env");
-const { classBackKeyboard, teacherBackKeyboard } = require("./keyboards");
+import { Telegraf, Markup } from "telegraf";
+import config from "./env.js";
+import { classBackKeyboard, teacherBackKeyboard } from "./keyboards.js";
+import { NikaResponse } from "nikaResponse.js";
 
 const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/;
 
 // Функция для обновления данных
 async function updateData() {
-  var response = (await axios.get("https://lyceum.nstu.ru/rasp/schedule.html"))
-    .data;
+  const websiteHtml = await fetch(
+    "https://lyceum.nstu.ru/rasp/schedule.html"
+  ).then((res) => res.text());
+  const nikaUrl = websiteHtml.substring(450, 478);
+  const nikaScript = await fetch(nikaUrl).then((res) => res.text());
 
-  eval(
-    (
-      await axios.get(
-        `https://lyceum.nstu.ru/rasp/${response.substring(450, 478)}`,
-      )
-    ).data,
-  );
+  var NIKA: NikaResponse;
+  eval(nikaScript);
 
   globalThis.NIKA = NIKA;
 
@@ -35,7 +33,7 @@ async function updateData() {
     const grade = Number(match[1]);
 
     classesObject[grade - 1].push(
-      Markup.button.callback(className, `class ${classID}`),
+      Markup.button.callback(className, `class ${classID}`)
     );
   });
 
@@ -43,7 +41,7 @@ async function updateData() {
     teacherID = ("000" + teacherID).substr(-3);
 
     listTeachersObject.push(
-      Markup.button.callback(teacherName, `teacher ${teacherID}`),
+      Markup.button.callback(teacherName, `teacher ${teacherID}`)
     );
   });
 
@@ -66,8 +64,8 @@ const bot = new Telegraf(config.BOT_TOKEN);
 
 bot.start((ctx) =>
   ctx.reply(
-    "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте",
-  ),
+    "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте"
+  )
 );
 
 bot.command("about", async (ctx) => {
@@ -77,7 +75,7 @@ bot.command("about", async (ctx) => {
     `Дата обновления информации:\n${NIKA.EXPORT_DATE} ${NIKA.EXPORT_TIME}`,
     Markup.inlineKeyboard([
       Markup.button.url("Ссылка на расписание", "https://lyceum.nstu.ru/rasp/"),
-    ]),
+    ])
   );
 });
 
@@ -117,7 +115,7 @@ bot.action(/class (.*)/, (ctx, next) => {
 
   // Обрабатываем и высылаем данные
   Object.entries(
-    NIKA.CLASS_SCHEDULE[Object.keys(NIKA.CLASS_SCHEDULE)[0]][classID],
+    NIKA.CLASS_SCHEDULE[Object.keys(NIKA.CLASS_SCHEDULE)[0]][classID]
   ).forEach(([lessonID, schedule]) => {
     if (Number(lessonID[0]) != day) {
       var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1];
@@ -154,7 +152,7 @@ bot.action(/teacher (.*)/, (ctx, next) => {
 
   // Обрабатываем и высылаем данные
   Object.entries(
-    NIKA.TEACH_SCHEDULE[Object.keys(NIKA.TEACH_SCHEDULE)[0]][teacherID],
+    NIKA.TEACH_SCHEDULE[Object.keys(NIKA.TEACH_SCHEDULE)[0]][teacherID]
   ).forEach(([lessonID, schedule]) => {
     if (Number(lessonID[0]) != day) {
       var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1];
@@ -169,7 +167,7 @@ bot.action(/teacher (.*)/, (ctx, next) => {
     if (!subject) return (text += `${Number(lessonID.substr(1))} Нет уроков\n`);
 
     return (text += `${Number(
-      lessonID.substr(1),
+      lessonID.substr(1)
     )} ${room} ${subject} ${className}\n`);
   });
 
