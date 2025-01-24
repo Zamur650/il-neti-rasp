@@ -1,68 +1,16 @@
-import { Telegraf, Markup } from "telegraf";
+import { Bot } from "grammy";
 import config from "./env.js";
 import { classBackKeyboard, teacherBackKeyboard } from "./keyboards.js";
 import { NikaResponse } from "nikaResponse.js";
-
-const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/;
-
-// Функция для обновления данных
-async function updateData() {
-  const websiteHtml = await fetch(
-    "https://lyceum.nstu.ru/rasp/schedule.html"
-  ).then((res) => res.text());
-  const nikaUrl = websiteHtml.substring(450, 478);
-  const nikaScript = await fetch(nikaUrl).then((res) => res.text());
-
-  var NIKA: NikaResponse;
-  eval(nikaScript);
-
-  globalThis.NIKA = NIKA;
-
-  let classesObject = [];
-  let listTeachersObject = [];
-  let teachersObject = [];
-
-  for (let i = 0; i < 11; i++) {
-    classesObject[i] = [];
-  }
-
-  Object.entries(NIKA.CLASSES).forEach(([classID, className]) => {
-    classID = ("000" + classID).substr(-3);
-
-    const match = className.match(gradeRegexp);
-    const grade = Number(match[1]);
-
-    classesObject[grade - 1].push(
-      Markup.button.callback(className, `class ${classID}`)
-    );
-  });
-
-  Object.entries(NIKA.TEACHERS).forEach(([teacherID, teacherName]) => {
-    teacherID = ("000" + teacherID).substr(-3);
-
-    listTeachersObject.push(
-      Markup.button.callback(teacherName, `teacher ${teacherID}`)
-    );
-  });
-
-  while (listTeachersObject.length) {
-    teachersObject.push(listTeachersObject.splice(0, 3));
-  }
-
-  global.classesKeyboard = Markup.inlineKeyboard(classesObject);
-  global.teachersKeyboard = Markup.inlineKeyboard(teachersObject);
-
-  console.log("Data loaded! ✔️");
-}
 
 // Обновляет данные раз в 30 минут (1000 миллисекунд * 60 секунд * 30 минут)
 updateData();
 setInterval(updateData, 1800000);
 
 // Инициализируем бота
-const bot = new Telegraf(config.BOT_TOKEN);
+const bot = new Bot(config.BOT_TOKEN);
 
-bot.start((ctx) =>
+bot.command("start", (ctx) =>
   ctx.reply(
     "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте"
   )
@@ -179,4 +127,4 @@ bot.action(/teacher (.*)/, (ctx, next) => {
     });
 });
 
-bot.launch();
+bot.start();
