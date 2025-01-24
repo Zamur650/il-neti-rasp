@@ -3,7 +3,7 @@ const axios = require("axios");
 const config = require("./env");
 const { classBackKeyboard, teacherBackKeyboard } = require("./keyboards");
 
-const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/g;
+const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/;
 
 // Функция для обновления данных
 async function updateData() {
@@ -20,16 +20,18 @@ async function updateData() {
 
 	globalThis.NIKA = NIKA;
 
-	let classesObject = new Array(11);
+	let classesObject = [];
 	let listTeachersObject = [];
 	let teachersObject = [];
 
-	classesObject.map(() => []);
+	for (let i = 0; i < 11; i++) {
+		classesObject[i] = [];
+	}
 
 	Object.entries(NIKA.CLASSES).forEach(([classID, className]) => {
 		classID = ("000" + classID).substr(-3);
 
-		const match = gradeRegexp.exec(className);
+		const match = className.match(gradeRegexp)
 		const grade = Number(match[1]);
 
 		classesObject[grade - 1].push(
