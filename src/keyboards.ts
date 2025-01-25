@@ -1,5 +1,5 @@
 import { InlineKeyboard } from "grammy";
-import { NikaResponse } from "nikaResponse.js";
+import { NikaResponse } from "./nikaResponse.js";
 
 const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/;
 
