@@ -20,7 +20,7 @@ export class GlobalData {
 
   async updateData() {
     this.nika = await this.nikaClient.getData();
-    this.classesKeyboard = await getClassesKeyboard(this.nika);
-    this.teachersKeyboard = await getTeachersKeyboard(this.nika);
+    this.classesKeyboard = getClassesKeyboard(this.nika);
+    this.teachersKeyboard = getTeachersKeyboard(this.nika);
   }
 }

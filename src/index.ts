@@ -6,11 +6,11 @@ import { GlobalData } from "./globalData.js";
 const bot = new Bot(config.BOT_TOKEN);
 const d = new GlobalData(30 * 60 * 1000);
 
-bot.command("start", (ctx) =>
+bot.command("start", (ctx) => {
   ctx.reply(
     "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте",
-  ),
-);
+  );
+});
 
 bot.command("about", (ctx) => {
   ctx.reply(
@@ -38,7 +38,7 @@ bot.callbackQuery("teacherSchedule", async (ctx) => {
   });
 });
 
-bot.callbackQuery(/class (.*)/, (ctx) => {
+bot.callbackQuery(/class (.+)/, (ctx) => {
   const classID = ctx.match[1];
 
   let text = `Расписание для ${d.nika.CLASSES[classID]}:\n`;
@@ -58,10 +58,9 @@ bot.callbackQuery(/class (.*)/, (ctx) => {
     const subject = d.nika.SUBJECTS[schedule.s[0]];
     const teacher = d.nika.TEACHERS[schedule.t[0]];
 
-    if (!subject)
-      return (text += `${Number(lessonID.substring(1))} Нет уроков\n`);
+    if (!subject) return (text += `${Number(lessonID.slice(1))} Нет уроков\n`);
 
-    text += `${Number(lessonID.substring(1))} ${room} ${subject} - ${teacher}\n`;
+    text += `${Number(lessonID.slice(1))} ${room} ${subject} - ${teacher}\n`;
   });
 
   ctx.editMessageText(text, {
@@ -69,7 +68,7 @@ bot.callbackQuery(/class (.*)/, (ctx) => {
   });
 });
 
-bot.callbackQuery(/teacher (.*)/, (ctx) => {
+bot.callbackQuery(/teacher (.+)/, (ctx) => {
   const teacherID = ctx.match[1];
 
   let text = `Расписание для ${d.nika.TEACHERS[teacherID]}:\n`;
@@ -87,13 +86,10 @@ bot.callbackQuery(/teacher (.*)/, (ctx) => {
 
     const room = d.nika.ROOMS[schedule.r];
     const subject = d.nika.SUBJECTS[schedule.s];
-    // TODO: check what is wrong with typing
-    const className = d.nika.CLASSES[schedule.c as unknown as string];
+    const className = schedule.c.map((c) => d.nika.CLASSES[c]).join(", ");
 
-    if (!subject)
-      return (text += `${Number(lessonID.substring(1))} Нет уроков\n`);
-
-    text += `${Number(lessonID.substring(1))} ${room} ${subject} ${className}\n`;
+    if (!subject) return (text += `${Number(lessonID.slice(1))} Нет уроков\n`);
+    text += `${Number(lessonID.slice(1))} ${room} ${subject} ${className}\n`;
   });
 
   ctx.editMessageText(text, {

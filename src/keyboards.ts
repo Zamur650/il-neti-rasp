@@ -13,41 +13,44 @@ export const teacherBackKeyboard = new InlineKeyboard().text(
   "teacherSchedule",
 );
 
-export async function getClassesKeyboard(nika: NikaResponse) {
+export function getClassesKeyboard(nika: NikaResponse) {
   const classesKeyboard = new InlineKeyboard();
 
   let currentGrade = 1;
 
-  Object.entries(nika.CLASSES).forEach(([classID, className]) => {
-    classID = ("000" + classID).substring(-3);
+  for (const [classId, className] of Object.entries(nika.CLASSES)) {
+    const fullClassId = ("000" + classId).slice(-3);
 
     const match = className.match(gradeRegexp);
     const grade = Number(match[1]);
 
     if (currentGrade != grade) {
-      classBackKeyboard.row();
+      classesKeyboard.row();
       currentGrade = grade;
     }
 
-    classesKeyboard.text(className, `class ${classID}`);
-  });
+    classesKeyboard.text(className, `class ${fullClassId}`);
+  }
 
   return classesKeyboard;
 }
 
-export async function getTeachersKeyboard(nika: NikaResponse) {
+export function getTeachersKeyboard(nika: NikaResponse) {
   const teachersKeyboard = new InlineKeyboard();
 
   let rowSize = 0;
 
-  Object.entries(nika.TEACHERS).forEach(([teacherID, teacherName]) => {
-    teacherID = ("000" + teacherID).substring(-3);
+  for (const [teacherID, teacherName] of Object.entries(nika.TEACHERS)) {
+    const fullTeacherID = ("000" + teacherID).slice(-3);
 
-    teachersKeyboard.text(teacherName, `teacher ${teacherID}`);
-
+    teachersKeyboard.text(teacherName, `teacher ${fullTeacherID}`);
     rowSize++;
-    if (rowSize == 3) teachersKeyboard.row();
-  });
+
+    if (rowSize == 3) {
+      teachersKeyboard.row();
+      rowSize = 0;
+    }
+  }
 
   return teachersKeyboard;
 }
