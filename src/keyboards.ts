@@ -36,18 +36,18 @@ export async function getClassesKeyboard(nika: NikaResponse) {
 }
 
 export async function getTeachersKeyboard(nika: NikaResponse) {
-  const teachersObject = new InlineKeyboard();
+  const teachersKeyboard = new InlineKeyboard();
 
   let rowSize = 0;
 
   Object.entries(nika.TEACHERS).forEach(([teacherID, teacherName]) => {
     teacherID = ("000" + teacherID).substring(-3);
 
-    teachersObject.text(teacherName, `teacher ${teacherID}`);
+    teachersKeyboard.text(teacherName, `teacher ${teacherID}`);
 
     rowSize++;
-    if (rowSize == 3) teachersObject.row();
+    if (rowSize == 3) teachersKeyboard.row();
   });
 
-  return teachersObject;
+  return teachersKeyboard;
 }

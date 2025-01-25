@@ -1,7 +1,7 @@
 import { NikaResponse } from "nikaResponse.js";
 
-export class GetNikaData {
-  async updateData() {
+export class NikaClient {
+  async getData() {
     const websiteHtml = await fetch(
       "https://lyceum.nstu.ru/rasp/schedule.html"
     ).then((res) => res.text());
