@@ -50,7 +50,7 @@ bot.callbackQuery(/class (.+)/, (ctx) => {
   )) {
     if (Number(lessonID[0]) != day) {
       const dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];
-      text += `-- ${dayName}\n`;
+      text += `\n<b>${dayName}:</b>\n`;
       day = Number(lessonID[0]);
     }
 
@@ -59,14 +59,15 @@ bot.callbackQuery(/class (.+)/, (ctx) => {
     const teacher = d.nika.TEACHERS[schedule.t[0]];
 
     if (!subject) {
-      text += `${Number(lessonID.slice(1))} Нет уроков\n`;
+      text += `${Number(lessonID.slice(1))}. <i>Нет урока</i>\n`;
       continue;
     }
 
-    text += `${Number(lessonID.slice(1))} ${room} ${subject} - ${teacher}\n`;
+    text += `${Number(lessonID.slice(1))}. ${room}: ${subject} | ${teacher}\n`;
   }
 
   ctx.editMessageText(text, {
+    parse_mode: "HTML",
     reply_markup: classBackKeyboard,
   });
 });
@@ -83,7 +84,7 @@ bot.callbackQuery(/teacher (.+)/, (ctx) => {
   )) {
     if (Number(lessonID[0]) != day) {
       const dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];
-      text += `-- ${dayName}\n`;
+      text += `\n<b>${dayName}:</b>\n`;
       day = Number(lessonID[0]);
     }
 
@@ -92,14 +93,15 @@ bot.callbackQuery(/teacher (.+)/, (ctx) => {
     const className = schedule.c.map((c) => d.nika.CLASSES[c]).join(", ");
 
     if (!subject) {
-      text += `${Number(lessonID.slice(1))} Нет уроков\n`;
+      text += `${Number(lessonID.slice(1))}. <i>Нет урока</i>\n`;
       continue;
     }
 
-    text += `${Number(lessonID.slice(1))} ${room} ${subject} ${className}\n`;
+    text += `${Number(lessonID.slice(1))}. ${room}: ${subject} | ${className}\n`;
   }
 
   ctx.editMessageText(text, {
+    parse_mode: "HTML",
     reply_markup: teacherBackKeyboard,
   });
 });
