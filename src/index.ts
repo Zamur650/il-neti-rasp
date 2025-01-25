@@ -8,13 +8,13 @@ const d = new GlobalData(30 * 60 * 1000);
 
 bot.command("start", (ctx) =>
   ctx.reply(
-    "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте"
-  )
+    "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте",
+  ),
 );
 
 bot.command("about", (ctx) => {
   ctx.reply(
-    `Дата обновления информации:\n${d.nika.EXPORT_DATE} ${d.nika.EXPORT_TIME}`
+    `Дата обновления информации:\n${d.nika.EXPORT_DATE} ${d.nika.EXPORT_TIME}`,
   );
 });
 
@@ -46,10 +46,10 @@ bot.callbackQuery(/class (.*)/, (ctx) => {
 
   // Обрабатываем и высылаем данные
   Object.entries(
-    d.nika.CLASS_SCHEDULE[Object.keys(d.nika.CLASS_SCHEDULE)[0]][classID]
+    d.nika.CLASS_SCHEDULE[Object.keys(d.nika.CLASS_SCHEDULE)[0]][classID],
   ).forEach(([lessonID, schedule]) => {
     if (Number(lessonID[0]) != day) {
-      var dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];
+      const dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];
       text += `-- ${dayName}\n`;
       day = Number(lessonID[0]);
     }
@@ -77,7 +77,7 @@ bot.callbackQuery(/teacher (.*)/, (ctx) => {
 
   // Обрабатываем и высылаем данные
   Object.entries(
-    d.nika.TEACH_SCHEDULE[Object.keys(d.nika.TEACH_SCHEDULE)[0]][teacherID]
+    d.nika.TEACH_SCHEDULE[Object.keys(d.nika.TEACH_SCHEDULE)[0]][teacherID],
   ).forEach(([lessonID, schedule]) => {
     if (Number(lessonID[0]) != day) {
       const dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];

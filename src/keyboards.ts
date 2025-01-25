@@ -5,12 +5,12 @@ const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/;
 
 export const classBackKeyboard = new InlineKeyboard().text(
   "Назад ⬅️",
-  "classSchedule"
+  "classSchedule",
 );
 
 export const teacherBackKeyboard = new InlineKeyboard().text(
   "Назад ⬅️",
-  "teacherSchedule"
+  "teacherSchedule",
 );
 
 export async function getClassesKeyboard(nika: NikaResponse) {
