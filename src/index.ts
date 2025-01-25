@@ -85,11 +85,10 @@ bot.callbackQuery(/teacher (.*)/, (ctx) => {
       day = Number(lessonID[0]);
     }
 
-    console.log(schedule.c);
-
     const room = d.nika.ROOMS[schedule.r];
     const subject = d.nika.SUBJECTS[schedule.s];
-    const className = d.nika.CLASSES[schedule.c as any];
+    // TODO: check what is wrong with typing
+    const className = d.nika.CLASSES[schedule.c as unknown as string];
 
     if (!subject)
       return (text += `${Number(lessonID.substring(1))} Нет уроков\n`);
