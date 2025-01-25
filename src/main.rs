@@ -28,10 +28,10 @@ async fn answer(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
                 .await?
         }
         Command::Classes => {
-            unimplemented!()
+            todo!()
         }
         Command::Teachers => {
-            unimplemented!()
+            todo!()
         }
     };
 

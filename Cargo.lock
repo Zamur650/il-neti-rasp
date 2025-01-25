@@ -898,6 +898,7 @@ version = "2.0.0"
 dependencies = [
  "log",
  "pretty_env_logger",
+ "regex",
  "reqwest 0.12.12",
  "serde",
  "serde_json",
