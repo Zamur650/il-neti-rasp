@@ -1,182 +1,102 @@
-import { Telegraf, Markup } from "telegraf";
+import { Bot } from "grammy";
 import config from "./env.js";
 import { classBackKeyboard, teacherBackKeyboard } from "./keyboards.js";
-import { NikaResponse } from "nikaResponse.js";
+import { GlobalData } from "./globalData.js";
 
-const gradeRegexp = /^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$/;
+const bot = new Bot(config.BOT_TOKEN);
+const d = new GlobalData(30 * 60 * 1000);
 
-// Функция для обновления данных
-async function updateData() {
-  const websiteHtml = await fetch(
-    "https://lyceum.nstu.ru/rasp/schedule.html"
-  ).then((res) => res.text());
-  const nikaUrl = websiteHtml.substring(450, 478);
-  const nikaScript = await fetch(nikaUrl).then((res) => res.text());
-
-  var NIKA: NikaResponse;
-  eval(nikaScript);
-
-  globalThis.NIKA = NIKA;
-
-  let classesObject = [];
-  let listTeachersObject = [];
-  let teachersObject = [];
-
-  for (let i = 0; i < 11; i++) {
-    classesObject[i] = [];
-  }
-
-  Object.entries(NIKA.CLASSES).forEach(([classID, className]) => {
-    classID = ("000" + classID).substr(-3);
-
-    const match = className.match(gradeRegexp);
-    const grade = Number(match[1]);
-
-    classesObject[grade - 1].push(
-      Markup.button.callback(className, `class ${classID}`)
-    );
-  });
-
-  Object.entries(NIKA.TEACHERS).forEach(([teacherID, teacherName]) => {
-    teacherID = ("000" + teacherID).substr(-3);
-
-    listTeachersObject.push(
-      Markup.button.callback(teacherName, `teacher ${teacherID}`)
-    );
-  });
-
-  while (listTeachersObject.length) {
-    teachersObject.push(listTeachersObject.splice(0, 3));
-  }
-
-  global.classesKeyboard = Markup.inlineKeyboard(classesObject);
-  global.teachersKeyboard = Markup.inlineKeyboard(teachersObject);
-
-  console.log("Data loaded! ✔️");
-}
-
-// Обновляет данные раз в 30 минут (1000 миллисекунд * 60 секунд * 30 минут)
-updateData();
-setInterval(updateData, 1800000);
-
-// Инициализируем бота
-const bot = new Telegraf(config.BOT_TOKEN);
-
-bot.start((ctx) =>
+bot.command("start", (ctx) => {
   ctx.reply(
-    "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте"
-  )
-);
+    "/class - узнать расписание класса\n/teacher - узнать расписание учителя\n/about - узнать информацию о боте",
+  );
+});
 
-bot.command("about", async (ctx) => {
-  if (!NIKA) return;
-
+bot.command("about", (ctx) => {
   ctx.reply(
-    `Дата обновления информации:\n${NIKA.EXPORT_DATE} ${NIKA.EXPORT_TIME}`,
-    Markup.inlineKeyboard([
-      Markup.button.url("Ссылка на расписание", "https://lyceum.nstu.ru/rasp/"),
-    ])
+    `Дата обновления информации:\n${d.nika.EXPORT_DATE} ${d.nika.EXPORT_TIME}`,
   );
 });
 
 bot.command("class", async (ctx) => {
-  ctx.reply("Выберите ваш класс:", global.classesKeyboard);
+  ctx.reply("Выберите ваш класс:", { reply_markup: d.classesKeyboard });
 });
 
 bot.command("teacher", async (ctx) => {
-  ctx.reply("Выберите учителя:", global.teachersKeyboard);
+  ctx.reply("Выберите учителя:", { reply_markup: d.teachersKeyboard });
 });
 
-bot.action("classSchedule", async (ctx) => {
-  return ctx
-    .editMessageText("Выберите ваш класс:", global.classesKeyboard)
-    .catch(() => {
-      return;
-    });
+bot.callbackQuery("classSchedule", async (ctx) => {
+  ctx.editMessageText("Выберите ваш класс:", {
+    reply_markup: d.classesKeyboard,
+  });
 });
 
-bot.action("teacherSchedule", async (ctx) => {
-  return ctx
-    .editMessageText("Выберите учителя:", global.teachersKeyboard)
-    .catch(() => {
-      return;
-    });
+bot.callbackQuery("teacherSchedule", async (ctx) => {
+  ctx.editMessageText("Выберите учителя:", {
+    reply_markup: d.teachersKeyboard,
+  });
 });
 
-bot.action(/class (.*)/, (ctx, next) => {
-  var classID = ctx.match[1];
+bot.callbackQuery(/class (.+)/, (ctx) => {
+  const classID = ctx.match[1];
 
-  var NIKA = globalThis.NIKA;
-
-  if (!NIKA) return;
-
-  var text = `Расписание для ${NIKA.CLASSES[classID]}:\n`;
-  var day = 0;
+  let text = `Расписание для ${d.nika.CLASSES[classID]}:\n`;
+  let day = 0;
 
   // Обрабатываем и высылаем данные
   Object.entries(
-    NIKA.CLASS_SCHEDULE[Object.keys(NIKA.CLASS_SCHEDULE)[0]][classID]
+    d.nika.CLASS_SCHEDULE[Object.keys(d.nika.CLASS_SCHEDULE)[0]][classID],
   ).forEach(([lessonID, schedule]) => {
     if (Number(lessonID[0]) != day) {
-      var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1];
+      const dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];
       text += `-- ${dayName}\n`;
       day = Number(lessonID[0]);
     }
 
-    var room = NIKA.ROOMS[schedule.r[0]];
-    var subject = NIKA.SUBJECTS[schedule.s[0]];
-    var teacher = NIKA.TEACHERS[schedule.t[0]];
+    const room = d.nika.ROOMS[schedule.r[0]];
+    const subject = d.nika.SUBJECTS[schedule.s[0]];
+    const teacher = d.nika.TEACHERS[schedule.t[0]];
 
-    if (!subject) return (text += `${Number(lessonID.substr(1))} Нет уроков\n`);
+    if (!subject) return (text += `${Number(lessonID.slice(1))} Нет уроков\n`);
 
-    text += `${Number(lessonID.substr(1))} ${room} ${subject} - ${teacher}\n`;
+    text += `${Number(lessonID.slice(1))} ${room} ${subject} - ${teacher}\n`;
   });
 
-  return ctx
-    .editMessageText(text, classBackKeyboard)
-    .then(() => next())
-    .catch(() => {
-      return;
-    });
+  ctx.editMessageText(text, {
+    reply_markup: classBackKeyboard,
+  });
 });
 
-bot.action(/teacher (.*)/, (ctx, next) => {
-  var teacherID = ctx.match[1];
+bot.callbackQuery(/teacher (.+)/, (ctx) => {
+  const teacherID = ctx.match[1];
 
-  var NIKA = globalThis.NIKA;
-
-  if (!NIKA) return;
-
-  var text = `Расписание для ${NIKA.TEACHERS[teacherID]}:\n`;
-  var day = 0;
+  let text = `Расписание для ${d.nika.TEACHERS[teacherID]}:\n`;
+  let day = 0;
 
   // Обрабатываем и высылаем данные
   Object.entries(
-    NIKA.TEACH_SCHEDULE[Object.keys(NIKA.TEACH_SCHEDULE)[0]][teacherID]
+    d.nika.TEACH_SCHEDULE[Object.keys(d.nika.TEACH_SCHEDULE)[0]][teacherID],
   ).forEach(([lessonID, schedule]) => {
     if (Number(lessonID[0]) != day) {
-      var dayName = NIKA.DAY_NAMES[Number(lessonID[0]) - 1];
+      const dayName = d.nika.DAY_NAMES[Number(lessonID[0]) - 1];
       text += `-- ${dayName}\n`;
       day = Number(lessonID[0]);
     }
 
-    var room = NIKA.ROOMS[schedule.r];
-    var subject = NIKA.SUBJECTS[schedule.s];
-    var className = NIKA.CLASSES[schedule.c];
+    const room = d.nika.ROOMS[schedule.r];
+    const subject = d.nika.SUBJECTS[schedule.s];
+    const className = schedule.c.map((c) => d.nika.CLASSES[c]).join(", ");
 
-    if (!subject) return (text += `${Number(lessonID.substr(1))} Нет уроков\n`);
-
-    return (text += `${Number(
-      lessonID.substr(1)
-    )} ${room} ${subject} ${className}\n`);
+    if (!subject) return (text += `${Number(lessonID.slice(1))} Нет уроков\n`);
+    text += `${Number(lessonID.slice(1))} ${room} ${subject} ${className}\n`;
   });
 
-  return ctx
-    .editMessageText(text, teacherBackKeyboard)
-    .then(() => next())
-    .catch(() => {
-      return;
-    });
+  ctx.editMessageText(text, {
+    reply_markup: teacherBackKeyboard,
+  });
 });
 
-bot.launch();
+bot.catch(() => {});
+
+bot.start();

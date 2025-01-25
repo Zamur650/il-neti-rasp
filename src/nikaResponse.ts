@@ -129,9 +129,7 @@ export type Rooms = Record<string, string>;
 
 export type Classgroups = Record<string, string>;
 
-export interface Periods {
-  "96": Period;
-}
+export type Periods = Record<string, Period>;
 
 export interface Period {
   b: string;
@@ -141,9 +139,7 @@ export interface Period {
 
 export type LessonTimes = Record<string, string[]>;
 
-export interface ClassSchedule {
-  "96": ClassSchedule96;
-}
+export type ClassSchedule = Record<string, ClassSchedule96>;
 
 export type ClassSchedule96 = Record<string, DaySchedule>;
 
@@ -168,9 +164,7 @@ export interface DayField {
   r: string[];
 }
 
-export interface TeachSchedule {
-  "96": TeachSchedule96;
-}
+export type TeachSchedule = Record<string, TeachSchedule96>;
 
 export type TeachSchedule96 = Record<string, TeacherTable>;
 
