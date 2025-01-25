@@ -1,3 +1,5 @@
+use std::env;
+
 use teloxide::{prelude::*, utils::command::BotCommands};
 
 #[tokio::main]
@@ -5,7 +7,8 @@ async fn main() {
     pretty_env_logger::init();
     log::info!("Starting command bot...");
 
-    let bot = Bot::from_env();
+    let bot_token = env::var("BOT_TOKEN").unwrap();
+    let bot = Bot::new(bot_token);
 
     Command::repl(bot, answer).await;
 }
