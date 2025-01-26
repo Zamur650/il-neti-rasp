@@ -1,10 +1,11 @@
+use itertools::Itertools;
 use regex::Regex;
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup};
 
 use crate::nika_response::NikaResponse;
 
 pub fn make_classes_keyboard(
-    nika_response: NikaResponse,
+    nika_response: &NikaResponse,
 ) -> Result<InlineKeyboardMarkup, KeyboardMakerError> {
     let grade_regex = Regex::new(r#"^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$"#)?;
 
@@ -12,7 +13,7 @@ pub fn make_classes_keyboard(
     let mut row = vec![];
     let mut current_grade = 1;
 
-    for (class_id, class_name) in nika_response.classes {
+    for (class_id, class_name) in nika_response.classes.clone() {
         let grade = grade_regex
             .captures(&class_name)
             .ok_or(KeyboardMakerError::GradeParsing)?
@@ -30,6 +31,22 @@ pub fn make_classes_keyboard(
 
         row.push(InlineKeyboardButton::callback(class_name, class_id));
     }
+
+    Ok(InlineKeyboardMarkup::new(keyboard))
+}
+
+pub fn make_teachers_keyboard(
+    nika_response: &NikaResponse,
+) -> Result<InlineKeyboardMarkup, KeyboardMakerError> {
+    let keyboard: Vec<Vec<InlineKeyboardButton>> = nika_response
+        .teachers
+        .iter()
+        .sorted_by(|(_a, a), (_b, b)| a.cmp(b))
+        .map(|(teacher_id, teacher_name)| InlineKeyboardButton::callback(teacher_name, teacher_id))
+        .chunks(3)
+        .into_iter()
+        .map(|chunk| chunk.collect())
+        .collect();
 
     Ok(InlineKeyboardMarkup::new(keyboard))
 }
