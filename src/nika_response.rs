@@ -64,35 +64,34 @@ pub struct NikaResponse {
     pub room_free_str: String,
     pub day_no_lsn_str: String,
     pub day_no_period_str: String,
-    pub info_panels: InfoPanels,
+    pub info_panels: HashMap<String, Vec<InfoPanel>>,
     pub panel_colors: PanelColors,
     pub panel_params: PanelParams,
-    pub class_shift: ClassShift,
-    pub teachers: Teachers,
-    pub subjects: Subjects,
-    pub classes: Classes,
-    pub class_courses: ClassCourses,
-    pub rooms: Rooms,
-    pub classgroups: Classgroups,
-    pub periods: Periods,
-    pub lesson_times: LessonTimes,
-    pub class_schedule: ClassScheduleEntry,
-    pub class_exchange: ClassExchange,
-    pub teach_schedule: TeachSchedule,
-    pub teach_exchange: TeachExchange,
+    pub class_shift: HashMap<String, HashMap<String, i64>>,
+    pub teachers: HashMap<String, String>,
+    pub subjects: HashMap<String, String>,
+    pub classes: HashMap<String, String>,
+    pub class_courses: HashMap<String, String>,
+    pub rooms: HashMap<String, String>,
+    pub classgroups: HashMap<String, String>,
+    pub periods: HashMap<String, Period>,
+    pub lesson_times: HashMap<String, Vec<String>>,
+    pub class_schedule: HashMap<String, HashMap<String, HashMap<String, ClassScheduleEntry>>>,
+    pub class_exchange: HashMap<String, HashMap<String, HashMap<String, ClassExchangeEntry>>>,
+    pub teach_schedule: HashMap<String, HashMap<String, HashMap<String, TeachScheduleEntry>>>,
+    pub teach_exchange: HashMap<String, HashMap<String, HashMap<String, TeachExchangeEntry>>>,
 }
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct InfoPanels(pub HashMap<String, InfoPanel>);
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all(deserialize = "SCREAMING_SNAKE_CASE"))]
 pub struct InfoPanel {
+    #[serde(rename(deserialize = "TYPE"))]
     pub type_field: String,
     pub param: String,
     pub title: String,
     pub scrn_cnt: i64,
     pub scrn_time: i64,
+    #[serde(rename(deserialize = "REF"))]
     pub ref_field: String,
 }
 
@@ -123,47 +122,11 @@ pub struct PanelParams {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassShift(pub HashMap<String, ClassShiftEntry>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassShiftEntry(pub HashMap<String, i64>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Teachers(pub HashMap<String, String>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Subjects(pub HashMap<String, String>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Classes(pub HashMap<String, String>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassCourses(pub HashMap<String, String>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Rooms(pub HashMap<String, String>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Classgroups(pub HashMap<String, String>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Periods(pub HashMap<String, Period>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Period {
     pub b: String,
     pub e: String,
     pub name: String,
 }
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct LessonTimes(pub HashMap<String, Vec<String>>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassSchedule(pub HashMap<String, ClassSchedule1>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassSchedule1(pub HashMap<String, ClassScheduleEntry>);
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct ClassScheduleEntry {
@@ -173,49 +136,26 @@ pub struct ClassScheduleEntry {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassExchange(pub HashMap<String, ClassExchange1>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassExchange1(pub HashMap<String, ClassExchange2>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassExchange2(pub HashMap<String, ClassExchangeEntry>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassExchangeEntry {
-    pub s: Vec<String>,
-    pub t: Vec<String>,
-    pub r: Vec<String>,
+pub struct ClassExchangeOnlyS {
+    pub s: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct TeachSchedule(pub HashMap<String, TeachSchedule1>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct TeachSchedule1(pub HashMap<String, TeachSchedule2>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct TeachSchedule2(pub HashMap<String, TeachScheduleEntry>);
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(untagged)]
+pub enum ClassExchangeEntry {
+    ClassScheduleEntry(ClassScheduleEntry),
+    ClassExchangeOnlyS(ClassExchangeOnlyS),
+}
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct TeachScheduleEntry {
     pub s: String,
-    pub c: Vec<String>,
-    pub r: String,
+    pub c: Option<Vec<String>>,
+    pub g: Option<Vec<String>>,
+    pub r: Option<String>,
 }
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct TeachExchange(pub HashMap<String, TeachExchange1>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct TeachExchange1(pub HashMap<String, TeachExchange2>);
-
-#[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct TeachExchange2(pub HashMap<String, TeachExchangeEntry>);
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct TeachExchangeEntry {
     pub s: String,
-    pub c: Vec<String>,
-    pub r: String,
 }
