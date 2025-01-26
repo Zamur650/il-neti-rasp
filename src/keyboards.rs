@@ -9,28 +9,29 @@ pub fn make_classes_keyboard(
 ) -> Result<InlineKeyboardMarkup, KeyboardMakerError> {
     let grade_regex = Regex::new(r#"^(\d{1,2})([\u0430-\u0433]|(?:-[1-4]))$"#)?;
 
-    let mut keyboard = vec![];
-    let mut row = vec![];
-    let mut current_grade = 1;
+    let keyboard: Vec<Vec<InlineKeyboardButton>> = nika_response
+        .classes
+        .iter()
+        .map(|(class_id, class_name)| -> Result<_, KeyboardMakerError> {
+            let grade = grade_regex
+                .captures(class_name)
+                .ok_or(KeyboardMakerError::GradeParsing)?
+                .get(1)
+                .ok_or(KeyboardMakerError::GradeParsing)?
+                .as_str()
+                .parse::<i32>()
+                .unwrap();
 
-    for (class_id, class_name) in nika_response.classes.clone() {
-        let grade = grade_regex
-            .captures(&class_name)
-            .ok_or(KeyboardMakerError::GradeParsing)?
-            .get(1)
-            .ok_or(KeyboardMakerError::GradeParsing)?
-            .as_str()
-            .parse::<i32>()
-            .unwrap();
+            let button = InlineKeyboardButton::callback(class_name, class_id);
 
-        if grade != current_grade {
-            keyboard.push(row.clone());
-            row.clear();
-            current_grade = grade;
-        }
-
-        row.push(InlineKeyboardButton::callback(class_name, class_id));
-    }
+            Ok((grade, button))
+        })
+        .collect::<Result<Vec<(i32, InlineKeyboardButton)>, KeyboardMakerError>>()?
+        .into_iter()
+        .chunk_by(|(grade, _)| *grade)
+        .into_iter()
+        .map(|(_, group)| group.map(|(_, button)| button).collect())
+        .collect();
 
     Ok(InlineKeyboardMarkup::new(keyboard))
 }
@@ -39,7 +40,7 @@ pub fn make_teachers_keyboard(nika_response: &NikaResponse) -> InlineKeyboardMar
     let keyboard: Vec<Vec<InlineKeyboardButton>> = nika_response
         .teachers
         .iter()
-        .sorted_by(|(_a, a), (_b, b)| a.cmp(b))
+        .sorted_by(|(_, a), (_, b)| a.cmp(b))
         .map(|(teacher_id, teacher_name)| InlineKeyboardButton::callback(teacher_name, teacher_id))
         .chunks(3)
         .into_iter()
