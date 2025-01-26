@@ -35,9 +35,7 @@ pub fn make_classes_keyboard(
     Ok(InlineKeyboardMarkup::new(keyboard))
 }
 
-pub fn make_teachers_keyboard(
-    nika_response: &NikaResponse,
-) -> Result<InlineKeyboardMarkup, KeyboardMakerError> {
+pub fn make_teachers_keyboard(nika_response: &NikaResponse) -> InlineKeyboardMarkup {
     let keyboard: Vec<Vec<InlineKeyboardButton>> = nika_response
         .teachers
         .iter()
@@ -48,7 +46,7 @@ pub fn make_teachers_keyboard(
         .map(|chunk| chunk.collect())
         .collect();
 
-    Ok(InlineKeyboardMarkup::new(keyboard))
+    InlineKeyboardMarkup::new(keyboard)
 }
 
 #[derive(Debug)]

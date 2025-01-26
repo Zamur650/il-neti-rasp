@@ -31,7 +31,7 @@ enum Command {
 async fn answer(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
     let nika_response = NikaClient::get_data().await.unwrap();
     let classes_keyboard = make_classes_keyboard(&nika_response).unwrap();
-    let teachers_keyboard = make_teachers_keyboard(&nika_response).unwrap();
+    let teachers_keyboard = make_teachers_keyboard(&nika_response);
 
     match cmd {
         Command::Help => {
