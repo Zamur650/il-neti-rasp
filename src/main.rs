@@ -1,5 +1,6 @@
 use std::env;
 
+use lyceumnstubot::{keyboards::make_classes_keyboard, nika_client::NikaClient};
 use teloxide::{prelude::*, utils::command::BotCommands};
 
 #[tokio::main]
@@ -25,13 +26,18 @@ enum Command {
 }
 
 async fn answer(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
+    let nika_response = NikaClient::get_data().await.unwrap();
+    let classes_keyboard = make_classes_keyboard(nika_response).unwrap();
+
     match cmd {
         Command::Help => {
             bot.send_message(msg.chat.id, Command::descriptions().to_string())
                 .await?
         }
         Command::Classes => {
-            todo!()
+            bot.send_message(msg.chat.id, "Выберите класс:")
+                .reply_markup(classes_keyboard)
+                .await?
         }
         Command::Teachers => {
             todo!()
