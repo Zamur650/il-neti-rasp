@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use serde::Deserialize;
 
@@ -64,22 +64,22 @@ pub struct NikaResponse {
     pub room_free_str: String,
     pub day_no_lsn_str: String,
     pub day_no_period_str: String,
-    pub info_panels: HashMap<String, Vec<InfoPanel>>,
+    pub info_panels: BTreeMap<String, Vec<InfoPanel>>,
     pub panel_colors: PanelColors,
     pub panel_params: PanelParams,
-    pub class_shift: HashMap<String, HashMap<String, i64>>,
-    pub teachers: HashMap<String, String>,
-    pub subjects: HashMap<String, String>,
-    pub classes: HashMap<String, String>,
-    pub class_courses: HashMap<String, String>,
-    pub rooms: HashMap<String, String>,
-    pub classgroups: HashMap<String, String>,
-    pub periods: HashMap<String, Period>,
-    pub lesson_times: HashMap<String, Vec<String>>,
-    pub class_schedule: HashMap<String, HashMap<String, HashMap<String, ClassScheduleEntry>>>,
-    pub class_exchange: HashMap<String, HashMap<String, HashMap<String, ClassExchangeEntry>>>,
-    pub teach_schedule: HashMap<String, HashMap<String, HashMap<String, TeachScheduleEntry>>>,
-    pub teach_exchange: HashMap<String, HashMap<String, HashMap<String, TeachExchangeEntry>>>,
+    pub class_shift: BTreeMap<String, BTreeMap<String, i64>>,
+    pub teachers: BTreeMap<String, String>,
+    pub subjects: BTreeMap<String, String>,
+    pub classes: BTreeMap<String, String>,
+    pub class_courses: BTreeMap<String, String>,
+    pub rooms: BTreeMap<String, String>,
+    pub classgroups: BTreeMap<String, String>,
+    pub periods: BTreeMap<String, Period>,
+    pub lesson_times: BTreeMap<String, Vec<String>>,
+    pub class_schedule: BTreeMap<String, BTreeMap<String, BTreeMap<String, ClassScheduleEntry>>>,
+    pub class_exchange: BTreeMap<String, BTreeMap<String, BTreeMap<String, ClassExchangeEntry>>>,
+    pub teach_schedule: BTreeMap<String, BTreeMap<String, BTreeMap<String, TeachScheduleEntry>>>,
+    pub teach_exchange: BTreeMap<String, BTreeMap<String, BTreeMap<String, TeachExchangeEntry>>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
