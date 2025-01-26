@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use itertools::Itertools;
 use regex::Regex;
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup};
@@ -56,7 +58,7 @@ pub enum KeyboardMakerError {
     GradeParsing,
 }
 
-impl std::error::Error for KeyboardMakerError {}
+impl Error for KeyboardMakerError {}
 
 impl std::fmt::Display for KeyboardMakerError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

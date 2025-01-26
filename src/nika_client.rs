@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use regex::Regex;
 
 use crate::nika_response::NikaResponse;
@@ -48,7 +50,7 @@ pub enum NikaClientError {
     FilenameParsing,
 }
 
-impl std::error::Error for NikaClientError {}
+impl Error for NikaClientError {}
 
 impl std::fmt::Display for NikaClientError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
