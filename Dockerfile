@@ -1,4 +1,4 @@
-FROM rust:1.79-alpine3.20 AS builder
+FROM rust:1.84-alpine3.21 AS builder
 LABEL authors="tapnisu"
 
 WORKDIR /usr/src/lyceumnstubot
