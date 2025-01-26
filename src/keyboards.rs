@@ -12,9 +12,7 @@ pub fn make_classes_keyboard(
     let mut row = vec![];
     let mut current_grade = 1;
 
-    for (mut class_id, class_name) in nika_response.classes {
-        class_id.insert_str(0, &"0".repeat(class_id.len()));
-
+    for (class_id, class_name) in nika_response.classes {
         let grade = grade_regex
             .captures(&class_name)
             .ok_or(KeyboardMakerError::GradeParsing)?
