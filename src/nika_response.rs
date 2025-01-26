@@ -123,10 +123,10 @@ pub struct PanelParams {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassShifts(pub HashMap<String, ClassShift>);
+pub struct ClassShift(pub HashMap<String, ClassShiftEntry>);
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct ClassShift(pub HashMap<String, i64>);
+pub struct ClassShiftEntry(pub HashMap<String, i64>);
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Teachers(pub HashMap<String, String>);
