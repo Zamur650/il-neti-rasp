@@ -2,7 +2,7 @@ use std::error::Error;
 
 use regex::Regex;
 
-use crate::nika_response::NikaResponse;
+use super::response::NikaResponse;
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct NikaClient {}

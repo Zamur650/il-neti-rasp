@@ -4,7 +4,7 @@ use itertools::Itertools;
 use regex::Regex;
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup};
 
-use crate::nika_response::NikaResponse;
+use crate::nika::response::NikaResponse;
 
 pub fn make_classes_keyboard(
     nika_response: &NikaResponse,

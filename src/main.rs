@@ -2,7 +2,7 @@ use std::{env, error::Error};
 
 use lyceumnstubot::{
     keyboards::{make_classes_keyboard, make_teachers_keyboard},
-    nika_client::NikaClient,
+    nika::client::NikaClient,
 };
 use teloxide::{prelude::*, types::Me, utils::command::BotCommands};
 
